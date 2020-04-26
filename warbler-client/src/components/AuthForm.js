@@ -1,0 +1,99 @@
+import React, { Component } from "react";
+
+class AuthForm extends Component {
+  state = {
+    email: "",
+    username: "",
+    password: "",
+    profileImageUrl: ""
+  };
+  handleSubmit = e => {
+    e.preventDefault();
+    const authType = this.props.signUp ? "signup" : "signin";
+    this.props
+      .onAuth(authType, this.state)
+      .then(() => {
+        console.log("logged in");
+        this.props.history.push("/");
+      })
+      .catch(() => {
+        return;
+      });
+  };
+  handleChange = e => {
+    this.setState({ [e.target.name]: e.target.value });
+  };
+  render() {
+    const { email, username, password, profileImageUrl } = this.state;
+    const {
+      heading,
+      buttonText,
+      signUp,
+      errors,
+      removeError,
+      history
+    } = this.props;
+    history.listen(() => {
+      removeError();
+    });
+    return (
+      <div>
+        <div className="row justify-content-md-center text-center">
+          <div className="col-md-6">
+            <form onSubmit={this.handleSubmit}>
+              <h2>{heading}</h2>
+              {errors.message && (
+                <div className="alert alert-danger">{errors.message}</div>
+              )}
+              <label htmlFor="email">Email:</label>
+              <input
+                className="form-control"
+                id="email"
+                name="email"
+                value={email}
+                onChange={this.handleChange}
+                type="email"
+              ></input>
+              <label htmlFor="password">Password:</label>
+              <input
+                className="form-control"
+                id="password"
+                name="password"
+                onChange={this.handleChange}
+                type="password"
+              ></input>
+              {signUp && (
+                <div>
+                  <label htmlFor="username">User Name:</label>
+                  <input
+                    className="form-control"
+                    id="username"
+                    name="username"
+                    value={username}
+                    onChange={this.handleChange}
+                    type="text"
+                  ></input>
+                  <label htmlFor="imageurl">Profile Image Url:</label>
+                  <input
+                    className="form-control"
+                    id="imageurl"
+                    name="imageurl"
+                    onChange={this.handleChange}
+                    type="text"
+                  ></input>
+                </div>
+              )}
+              <button
+                type="submit"
+                className="btn btn-primary btn-block btn-lg"
+              >
+                {buttonText}
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+export default AuthForm;
